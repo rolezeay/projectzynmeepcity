@@ -1,0 +1,3300 @@
+local function service(...) return game:GetService(...) end
+local Players = service("Players")
+local MarketplaceService = service("MarketplaceService")
+local ReplicatedStorage = service("ReplicatedStorage")
+local HttpService = service("HttpService")
+local Constants = require(ReplicatedStorage:WaitForChild("Constants"))
+local Connection = ReplicatedStorage:WaitForChild("Connection")
+local ConnectionEvent = ReplicatedStorage:WaitForChild("ConnectionEvent")
+local player = game.Players.LocalPlayer
+local MarketplaceService = game:GetService("MarketplaceService")
+local executorName = identifyexecutor()
+local gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
+local openingSound = Instance.new("Sound")
+openingSound.SoundId = "rbxassetid://6958727243" 
+openingSound.Volume = 5 
+openingSound.PlayOnRemove = false
+openingSound.Looped = false
+openingSound.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") 
+
+local function playOpeningSound()
+    openingSound:Play()
+end
+
+playOpeningSound()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "project zyn | " .. executorName .. " | " .. gameName,
+   Icon = 10730387329, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "épico meepcity gui",
+   LoadingSubtitle = "by zynlope team",
+    Theme = {
+     TextColor = Color3.fromRGB(199, 149, 252),
+
+      Background = Color3.fromRGB(0, 0, 0),
+      Topbar = Color3.fromRGB(0, 0, 0),
+      Shadow = Color3.fromRGB(20, 20, 20),
+
+      NotificationBackground = Color3.fromRGB(20, 20, 20),
+      NotificationActionsBackground = Color3.fromRGB(230, 230, 230),
+
+      TabBackground = Color3.fromRGB(0, 0, 0),
+      TabStroke = Color3.fromRGB(85, 85, 85),
+      TabBackgroundSelected = Color3.fromRGB(199, 149, 252),
+      TabTextColor = Color3.fromRGB(199, 149, 252),
+      SelectedTabTextColor = Color3.fromRGB(50, 50, 50),
+
+      ElementBackground = Color3.fromRGB(0, 0, 0),
+      ElementBackgroundHover = Color3.fromRGB(25, 25, 25),
+      SecondaryElementBackground = Color3.fromRGB(25, 25, 25),
+      ElementStroke = Color3.fromRGB(25, 25, 25),
+      SecondaryElementStroke = Color3.fromRGB(40, 40, 40),
+
+      SliderBackground = Color3.fromRGB(245, 245, 245),
+      SliderProgress = Color3.fromRGB(245, 245, 245), 
+      SliderStroke = Color3.fromRGB(25, 25, 25), 
+
+      ToggleBackground = Color3.fromRGB(30, 30, 30),
+      ToggleEnabled = Color3.fromRGB(34, 139, 34), 
+      ToggleDisabled = Color3.fromRGB(100, 100, 100),
+      ToggleEnabledStroke = Color3.fromRGB(50, 205, 50), -- Verde claro
+      ToggleDisabledStroke = Color3.fromRGB(125, 125, 125),
+      ToggleEnabledOuterStroke = Color3.fromRGB(0, 255, 127), -- Verde neon
+      ToggleDisabledOuterStroke = Color3.fromRGB(65, 65, 65),
+
+      DropdownSelected = Color3.fromRGB(40, 40, 40),
+      DropdownUnselected = Color3.fromRGB(30, 30, 30),
+
+      InputBackground = Color3.fromRGB(30, 30, 30),
+      InputStroke = Color3.fromRGB(65, 65, 65),
+      PlaceholderColor = Color3.fromRGB(178, 178, 178)
+   },
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+local Tab = Window:CreateTab("Meepcity", 105651797171702)
+
+local function colorToTable(clr)
+    return {tostring(clr.R * 255), tostring(clr.G * 255), tostring(clr.B * 255)}
+end
+
+local function ExtractData(humdes)
+    local ava = {}
+
+    for _, v in pairs({"WidthScale", "HeightScale", "DepthScale", "BodyTypeScale", "ProportionScale", "HeadScale"}) do
+        ava[v] = humdes[v]
+    end
+
+    for _, v in pairs({"Face", "Head", "LeftArm", "RightArm", "LeftLeg", "RightLeg", "Torso"}) do
+        ava[v] = humdes[v]
+    end
+
+    for _, v in pairs({"HeadColor", "LeftArmColor", "RightArmColor", "LeftLegColor", "RightLegColor", "TorsoColor"}) do
+        ava[v] = colorToTable(humdes[v])
+    end
+
+    for _, v in pairs({"GraphicTShirt", "Shirt", "Pants"}) do
+        ava[v] = humdes[v]
+    end
+
+    for _, v in pairs({"IdleAnimation", "RunAnimation", "JumpAnimation", "SwimAnimation", "WalkAnimation", "ClimbAnimation", "FallAnimation"}) do
+        ava[v] = humdes[v]
+    end
+
+    for _, v in pairs({"Hat", "Hair", "Back", "Face", "Front", "Neck", "Shoulders", "Waist"}) do
+        ava[v .. "Accessory"] = humdes[v .. "Accessory"]
+    end
+
+    local layered = humdes:GetAccessories(false)
+    for i, accessory in pairs(layered) do
+        if accessory.AccessoryType and typeof(accessory.AccessoryType) == "EnumItem" then
+            accessory.AccessoryType = accessory.AccessoryType.Name
+        end
+        accessory.Order = i
+    end
+    ava.AccessoryBlob = layered
+
+    ava.Emotes = humdes:GetEmotes()
+
+    return ava
+end
+
+
+local AvatarClipboard = nil
+local AvatarClipboardName = "Unnamed"
+
+local Section = Tab:CreateSection("Avatar Clipboard")
+Section:Set("Avatar Clipboard")
+
+local function copyToClip(data, name)
+    if not data then
+        AvatarClipboard = nil
+        AvatarClipboardName = "Unnamed"
+        Section:Set("Avatar Clipboard")
+    else
+        AvatarClipboard = data
+        AvatarClipboardName = name
+        Section:Set("Avatar Clipboard: " .. name)
+    end
+end
+
+local function LoadPlayer(player)
+    coroutine.wrap(function()
+        if player ~= Players.LocalPlayer then
+            local function LoadCharacter(character)
+                local prox = Instance.new("ProximityPrompt", character:WaitForChild("HumanoidRootPart"))
+                prox.ActionText = "Copy Avatar To Clipboard"
+                prox.ObjectText = player.DisplayName
+                prox.KeyboardKeyCode = Enum.KeyCode.C
+                prox.HoldDuration = 0
+                prox.RequiresLineOfSight = false
+                prox.Triggered:Connect(function()
+                    if character and character:FindFirstChild("Humanoid") and character.Humanoid:FindFirstChild("HumanoidDescription") then
+                        copyToClip(ExtractData(character.Humanoid.HumanoidDescription), player.DisplayName)
+                    end
+                end)
+            end
+            LoadCharacter(player.Character or player.CharacterAdded:Wait())
+            player.CharacterAdded:Connect(LoadCharacter)
+        end
+    end)()
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    LoadPlayer(player)
+end
+Players.PlayerAdded:Connect(LoadPlayer)
+
+Tab:CreateButton({
+    Name = "Copy Current Avatar",
+    Callback = function()
+        local player = Players.LocalPlayer
+        local character = player.Character
+        if character and character:FindFirstChild("Humanoid") and character.Humanoid:FindFirstChild("HumanoidDescription") then
+            copyToClip(ExtractData(character.Humanoid.HumanoidDescription), player.DisplayName)
+        end
+    end
+})
+
+Tab:CreateButton({
+    Name = "Load Avatar",
+    Callback = function()
+        if AvatarClipboard then
+            game:GetService("ReplicatedStorage").FunctionConnections.NewAESaveAvatar:InvokeServer(AvatarClipboard)
+        end
+    end
+})
+
+Tab:CreateButton({
+    Name = "Save Avatar",
+    Callback = function()
+        if AvatarClipboard then
+            -- Save avatar using the clipboard name and data
+            Connection:InvokeServer(65, AvatarClipboardName)
+            Connection:InvokeServer(319, AvatarClipboard)
+        end
+    end
+})
+
+Tab:CreateButton({
+    Name = "No outfit max",
+    Callback = function()
+    Constants.STATS.MAXAvatarEditorCustomOutfits = 999999
+    end
+})
+
+Tab:CreateButton({
+    Name = "project zyn fit",
+    Callback = function()
+-- Script generated by SimpleSpy - credits to exx#9394
+
+local args = {
+    [1] = {
+        ["HatAccessory"] = "33070696,3138460373",
+        ["RightLegColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["Face"] = 26343188,
+        ["WidthScale"] = 1,
+        ["BodyTypeScale"] = 0,
+        ["BackAccessory"] = "12632137005",
+        ["FrontAccessory"] = "0",
+        ["AccessoryBlob"] = {
+            [1] = {
+                ["Order"] = 1,
+                ["AssetId"] = 14411367823,
+                ["AccessoryType"] = "Jacket"
+            }
+        },
+        ["Pants"] = 3911904807,
+        ["RightArmColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["LeftLegColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["HairAccessory"] = "17327436421",
+        ["HeadColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["RightArm"] = 103452055306587,
+        ["Torso"] = 81500432784353,
+        ["IdleAnimation"] = 2510235063,
+        ["RightLeg"] = 18970745060,
+        ["Shirt"] = 87815175853530,
+        ["GraphicTShirt"] = 72395760414645,
+        ["ProportionScale"] = 0,
+        ["RunAnimation"] = 619536621,
+        ["NeckAccessory"] = "11996992458",
+        ["TorsoColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["DepthScale"] = 1,
+        ["LeftArm"] = 87202958751790,
+        ["HeadScale"] = 1,
+        ["HeightScale"] = 1,
+        ["LeftArmColor"] = {
+            [1] = "204",
+            [2] = "142",
+            [3] = "105"
+        },
+        ["LeftLeg"] = 18970745144
+    }
+}
+
+game:GetService("ReplicatedStorage").FunctionConnections.NewAESaveAvatar:InvokeServer(unpack(args))
+    end
+})
+
+Tab:CreateButton({
+    Name = "Kid",
+    Callback = function()
+-- Script generated by SimpleSpy - credits to exx#9394
+
+local args = {
+    [1] = 2,
+    [2] = true
+}
+
+game:GetService("ReplicatedStorage").FunctionConnections.NewAERequestSetCheesyEffect:InvokeServer(unpack(args))
+    end
+})
+
+Section:Set("Avatar")
+
+local LoadAvatarFromUserId = Tab:CreateInput({
+   Name = "Load Avatar From UserId",
+   CurrentValue = "",
+   PlaceholderText = "Enter UserId",
+   RemoveTextAfterFocusLost = false,
+   Flag = "LoadAvatarUserId",
+   Callback = function(userid)
+      if userid and tonumber(userid) and Players:GetHumanoidDescriptionFromUserId(tonumber(userid)) then
+         local data = ExtractData(Players:GetHumanoidDescriptionFromUserId(tonumber(userid)))
+        game:GetService("ReplicatedStorage").FunctionConnections.NewAESaveAvatar:InvokeServer(data)
+      end
+   end,
+})
+
+local LoadAvatarFromUsername = Tab:CreateInput({
+   Name = "Load Avatar From Username",
+   CurrentValue = "",
+   PlaceholderText = "Enter Username",
+   RemoveTextAfterFocusLost = false,
+   Flag = "LoadAvatarUsername",
+   Callback = function(username)
+      if username and Players:GetUserIdFromNameAsync(username) then
+         local data = ExtractData(Players:GetHumanoidDescriptionFromUserId(Players:GetUserIdFromNameAsync(username)))
+          game:GetService("ReplicatedStorage").FunctionConnections.NewAESaveAvatar:InvokeServer(data)
+      end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Tamanho Ilimitado de Sussurro",
+   Callback = function()
+Constants.STATS.WHISPER_MAX_CHARACTERS = math.huge
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "100% de Sucesso ao Pescar",
+   Callback = function()
+	Constants.STATS.FISHCastObjectMinDistanceToCatch = math.huge
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Tamanho Ilimitado do Balde de Pesca",
+   Callback = function()
+	Constants.STATS.FISHMaxAllowedInBucket = math.huge
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Categoria Extra Para Itens Offsale (Playground)",
+   Callback = function()
+	if not onsaleran then
+		onsaleran = true
+		local function onsale(module)
+			local fd = require(module)
+			local id = 666
+			fd.Categories[id] = {
+				CategoryId = id,
+				Image = 10730387329,
+				CatTitle = "zynlope offsales 👅"
+			}
+			for i, v in pairs(fd.Assets) do
+				if not fd.Assets[i].ForSale then
+					fd.Assets[i].ForSale = true
+					if fd.Assets[i].Details.Price.HalloweenCandy then
+						fd.Assets[i].Details.Price.HalloweenCandy = nil
+					end
+					fd.Assets[i].CatId = id
+					fd.Assets[i].Desc = "este é um item offsale que foi trazido de volta à vida"
+				end
+			end
+		end
+		onsale(game.ReplicatedStorage:WaitForChild("Shop_Furniture"))
+		onsale(game.ReplicatedStorage:WaitForChild("Shop_Toys"))
+		onsale(game.ReplicatedStorage:WaitForChild("Shop_HomeImprovement"))
+		onsale(game.ReplicatedStorage:WaitForChild("Shop_PetShop"))
+	end
+
+	Rayfield:Notify({
+	   Title = "emg",
+	   Content = "Agora você pode verificar as lojas no playground para acessar a categoria secreta de itens offsale!",
+	   Duration = 6.5,
+	   Image = 10730387329,
+	})
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Abrir Navegador de Servidor (Inclui Backyard Server Browser)",
+   Callback = function()
+		local serverbrowsermodule = require(game.Players.LocalPlayer.PlayerGui:WaitForChild("ServerBrowserGui"):WaitForChild("ServerBrowserGUI"))
+		serverbrowsermodule.Open()
+   end,
+})
+
+local Section = Tab:CreateSection("FE")
+
+local Button = Tab:CreateButton({
+   Name = "Fogos de Artifício (Manual)",
+   Callback = function()
+		game:GetService("ReplicatedStorage").Connection:InvokeServer(202, 1310)
+        game:GetService("ReplicatedStorage").Connection:InvokeServer(201, 1310, {})
+        game:GetService("ReplicatedStorage").ConnectionEvent:FireServer(210)
+   end,
+})
+
+local spawnFirework = false
+local fireworkLoop
+
+local Toggle = Tab:CreateToggle({
+   Name = "Lançar Fogos (Normal)",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+		spawnFirework = value
+		if spawnFirework then
+			fireworkLoop = coroutine.create(function()
+				while spawnFirework do
+					game:GetService("ReplicatedStorage").Connection:InvokeServer(202, 1310)
+					game:GetService("ReplicatedStorage").Connection:InvokeServer(201, 1310, {})
+					game:GetService("ReplicatedStorage").ConnectionEvent:FireServer(210)
+					wait(1.5)
+				end
+			end)
+			coroutine.resume(fireworkLoop)
+		else
+			spawnFirework = false
+		end
+   end,
+})
+
+local spawnFirework = false
+local fireworkConnection
+local lastFireworkTime = 0
+local fireworkCooldown = 1.2
+
+local Toggle = Tab:CreateToggle({
+   Name = "Multi Spam de Fogos (Melhor)",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+		spawnFirework = value
+        if spawnFirework then
+            fireworkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if tick() - lastFireworkTime >= fireworkCooldown then
+                    game:GetService("ReplicatedStorage").Connection:InvokeServer(202, 1310)
+                    game:GetService("ReplicatedStorage").Connection:InvokeServer(201, 1310, {})
+                    game:GetService("ReplicatedStorage").ConnectionEvent:FireServer(210)
+                    lastFireworkTime = tick()
+                end
+            end)
+        else
+            if fireworkConnection then
+                fireworkConnection:Disconnect()
+                fireworkConnection = nil
+            end
+        end
+   end,
+})
+
+-- Define the animation track outside the toggle for better scope handling
+local animationTrack
+
+local Toggle = Tab:CreateToggle({
+    Name = "Fake ZZZ",
+    CurrentValue = false,
+    Flag = "ToggleExample",
+    Callback = function(Value)
+        
+        local animationId = "rbxassetid://2176786857"
+        local animation = Instance.new("Animation")
+        animation.AnimationId = animationId
+
+       
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+
+      
+        local args = {
+            [1] = Value, 
+            [2] = 1
+        }
+
+        if Value then
+           
+            if not animationTrack or animationTrack.IsPlaying == false then
+                animationTrack = humanoid:LoadAnimation(animation)
+                animationTrack:Play()
+            end
+
+            
+            game:GetService("ReplicatedStorage").EventConnections.SetCharacterIsSleeping:FireServer(unpack(args))
+        else
+           
+            if animationTrack and animationTrack.IsPlaying then
+                animationTrack:Stop()
+            end
+
+           
+            args[1] = false
+            game:GetService("ReplicatedStorage").EventConnections.SetCharacterIsSleeping:FireServer(unpack(args))
+        end
+    end,
+})
+
+
+local Toggle = Tab:CreateToggle({
+   Name = "Spam turkey", 
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+        isSpamming = value
+        if isSpamming then
+            spawn(function()
+                while isSpamming do
+                    local player = game.Players.LocalPlayer
+                    local character = player.Character
+                    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+                    local characterPosition = humanoidRootPart.Position
+
+                    local rayOrigin = characterPosition + Vector3.new(0, 5, 0)
+                    local rayDirection = Vector3.new(0, -10, 0)
+
+                    local raycastResult = workspace:Raycast(rayOrigin, rayDirection)
+
+                    local groundPosition
+                    if raycastResult then
+                        groundPosition = raycastResult.Position
+                    else
+                        groundPosition = characterPosition - Vector3.new(0, 5, 0)
+                    end
+
+                    local plantPosition = groundPosition + Vector3.new(0, -3, 0)
+
+                    local args1 = { [1] = 201, [2] = 1372, [3] = {} }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args1))
+
+                    local args2 = {
+                        [1] = 687,
+                        [2] = plantPosition
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("FunctionConnections"):WaitForChild("SpecialObjectRequestPlant"):InvokeServer(unpack(args2))
+
+                    local args3 = { [1] = 202, [2] = 687 }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args3))
+
+                    wait(0.08)
+                end
+            end)
+        else
+            isSpamming = false
+        end
+    end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Spam pizza box", 
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+        isSpamming = value
+        if isSpamming then
+            spawn(function()
+                while isSpamming do
+                    local player = game.Players.LocalPlayer
+                    local character = player.Character
+                    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+                    local characterPosition = humanoidRootPart.Position
+
+                    local rayOrigin = characterPosition + Vector3.new(0, 5, 0)
+                    local rayDirection = Vector3.new(0, -10, 0)
+
+                    local raycastResult = workspace:Raycast(rayOrigin, rayDirection)
+
+                    local groundPosition
+                    if raycastResult then
+                        groundPosition = raycastResult.Position
+                    else
+                        groundPosition = characterPosition - Vector3.new(0, 5, 0)
+                    end
+
+                    local plantPosition = groundPosition + Vector3.new(0, -3, 0)
+
+                    local args1 = { [1] = 201, [2] = 1372, [3] = {} }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args1))
+
+                    local args2 = {
+                        [1] = 1296,
+                        [2] = plantPosition
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("FunctionConnections"):WaitForChild("SpecialObjectRequestPlant"):InvokeServer(unpack(args2))
+
+                    local args3 = { [1] = 202, [2] = 1296 }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args3))
+
+                    wait(0.08)
+                end
+            end)
+        else
+            isSpamming = false
+        end
+    end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Spam pizza plate", 
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+        isSpamming = value
+        if isSpamming then
+            spawn(function()
+                while isSpamming do
+                    local player = game.Players.LocalPlayer
+                    local character = player.Character
+                    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+                    local characterPosition = humanoidRootPart.Position
+
+                    local rayOrigin = characterPosition + Vector3.new(0, 5, 0)
+                    local rayDirection = Vector3.new(0, -10, 0)
+
+                    local raycastResult = workspace:Raycast(rayOrigin, rayDirection)
+
+                    local groundPosition
+                    if raycastResult then
+                        groundPosition = raycastResult.Position
+                    else
+                        groundPosition = characterPosition - Vector3.new(0, 5, 0)
+                    end
+
+                    local plantPosition = groundPosition + Vector3.new(0, -3, 0)
+
+                    local args1 = { [1] = 201, [2] = 1372, [3] = {} }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args1))
+
+                    local args2 = {
+                        [1] = 685,
+                        [2] = plantPosition
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("FunctionConnections"):WaitForChild("SpecialObjectRequestPlant"):InvokeServer(unpack(args2))
+
+                    local args3 = { [1] = 202, [2] = 685 }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args3))
+
+                    wait(0.08)
+                end
+            end)
+        else
+            isSpamming = false
+        end
+    end,
+})
+
+local Section = Tab:CreateSection("Espalhador de Balões")
+
+local Dropdown = Tab:CreateDropdown({
+   Name = "Selecionar balão",
+   Options = {"Vermelho", "Azul", "Verde", "Roxo", "Branco", "Coração"},
+   CurrentOption = {"Vermelho"},
+   MultipleOptions = false,
+   Flag = "BalloonColor",
+   Callback = function(Options)
+      selectedBalloonColor = Options[1]
+   end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Iniciar o espalhamento de balões",
+   CurrentValue = false,
+   Flag = "SpawnBalloons",
+   Callback = function(Value)
+      spawnBalloons = Value
+      if spawnBalloons then
+         task.spawn(function()
+            while spawnBalloons do
+               local balloonID
+               if selectedBalloonColor == "Vermelho" then
+                  balloonID = 1311
+               elseif selectedBalloonColor == "Azul" then
+                  balloonID = 1312
+               elseif selectedBalloonColor == "Verde" then
+                  balloonID = 1313
+               elseif selectedBalloonColor == "Roxo" then
+                  balloonID = 1314
+               elseif selectedBalloonColor == "Branco" then
+                  balloonID = 1315
+               elseif selectedBalloonColor == "Coração" then
+                  balloonID = 1039
+               end
+
+               local args = {
+                  [1] = 201,
+                  [2] = balloonID,
+                  [3] = {}
+               }
+
+               local args2 = {
+                  [1] = 202
+               }
+
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               task.wait(0)
+            end
+         end)
+      end
+   end,
+})
+
+local spawnAllBalloons = false
+
+local Toggle = Tab:CreateToggle({
+   Name = "Espalhar todos os balões",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+      spawnAllBalloons = Value
+      if spawnAllBalloons then
+         task.spawn(function()
+            while spawnAllBalloons do
+               local args = {
+                  [1] = 201,
+                  [2] = 1311,
+                  [3] = {}
+               }
+               local args2 = {
+                  [1] = 202
+               }
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               args[2] = 1312
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               args[2] = 1313
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               args[2] = 1314
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               args[2] = 1315
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               args[2] = 1039
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args))
+               game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+               task.wait(0)
+            end
+         end)
+      end
+   end,
+})
+
+local Section = Tab:CreateSection("Outros")
+
+local Button = Tab:CreateButton({
+   Name = "Vestir todos os itens (Reiniciar para removê-los)",
+   Callback = function()
+      local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+      local function tryID(id)
+          ReplicatedStorage.Connection:InvokeServer(201, id, {})
+      end
+
+      for id = 0, 8000 do
+          coroutine.wrap(tryID)(id)  
+      end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Rejuntar rapidamente",
+   Callback = function()
+      game:GetService("TeleportService"):Teleport(game.PlaceId)
+      wait()
+      wait()
+   end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Falsificar PLUS/BOOMBOX/CANDYPACK",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+      if Value then
+        game.Players.LocalPlayer:SetAttribute("PLUS",true)
+game.Players.LocalPlayer:SetAttribute("BoomBox",true)
+game.Players.LocalPlayer:SetAttribute("CandyPack",true)
+      else
+         game.Players.LocalPlayer:SetAttribute("PLUS", false)
+         game.Players.LocalPlayer:SetAttribute("BoomBox", false)
+         game.Players.LocalPlayer:SetAttribute("CandyPack",false)
+      end
+   end,
+})
+
+local Section = Tab:CreateSection("Visual Apenas")
+
+local Input = Tab:CreateInput({
+   Name = "Meep Coins",
+   CurrentValue = "",
+   PlaceholderText = "quantidade de dinheiro",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Value)
+      local coinAmount = tonumber(Value) 
+
+      if coinAmount then
+         game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CoinsContainer.Container.Amount.Text = coinAmount
+         game:GetService("Players").SlayerssUnleashedd.PlayerGui.ShopGui.Background.Content.Main.TopContainer.CoinsContainer.TotalCoins.Text = coinAmount
+         game:GetService("Players").SlayerssUnleashedd.PlayerGui.ScreenGui.ItemShop.ShopContent.TopBar.ButtonBuyCoins.CoinAmount.Text = coinAmount
+      else
+         warn("Entrada inválida! Por favor, insira um número válido.")
+      end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Dinheiro infinito",
+   Callback = function()
+      game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CoinsContainer.Container.Amount.Text = math.huge
+      game:GetService("Players").SlayerssUnleashedd.PlayerGui.ShopGui.Background.Content.Main.TopContainer.CoinsContainer.TotalCoins.Text = math.huge
+      game:GetService("Players").SlayerssUnleashedd.PlayerGui.ScreenGui.ItemShop.ShopContent.TopBar.ButtonBuyCoins.CoinAmount.Text = math.huge
+   end,
+})
+
+local Tab = Window:CreateTab("Servidor", 7734053426)
+local Section = Tab:CreateSection("Interagir com o servidor.")
+
+local Button = Tab:CreateButton({
+   Name = "Give snowball all (BUGGY)",
+   Callback = function()
+     local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local isRunning = false 
+
+local function equipItem()
+    local equipArgs = {201, 932}
+    local success, result = pcall(function()
+        ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+    end)
+    if not success then
+        warn("Equip item failed:", result)
+    end
+end
+
+local function unEquip()
+    local args = {
+        [1] = 202,
+    }
+    pcall(function()
+        ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(args))
+    end)
+end
+
+local function hasItemEquipped(player)
+    local equippedItems = player:FindFirstChild("Backpack"):FindFirstChild(932)
+    return equippedItems ~= nil
+end
+
+local function giveItemToAllPlayers()
+    for _, player in pairs(Players:GetPlayers()) do
+        if not hasItemEquipped(player) then
+            local giveArgs = {player.UserId, 932}
+            local success, result = pcall(function()
+                ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+            end)
+            if not success then
+                warn("Give item failed for " .. player.Name .. ":", result)
+            end
+        end
+    end
+end
+
+while true do
+    if not isRunning then
+        isRunning = true
+        
+        equipItem()
+        giveItemToAllPlayers()
+        unEquip()
+        
+        isRunning = false
+    else
+        wait(1)
+    end
+    wait(2)
+end
+
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Give baby meep all (BUGGY)",
+   Callback = function()
+     local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local isRunning = false 
+
+local function equipItem()
+    local equipArgs = {201, 1232}
+    local success, result = pcall(function()
+        ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+    end)
+    if not success then
+        warn("Equip item failed:", result)
+    end
+end
+
+local function unEquip()
+    local args = {
+        [1] = 202,
+    }
+    pcall(function()
+        ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(args))
+    end)
+end
+
+local function hasItemEquipped(player)
+    local equippedItems = player:FindFirstChild("Backpack"):FindFirstChild(932)
+    return equippedItems ~= nil
+end
+
+local function giveItemToAllPlayers()
+    for _, player in pairs(Players:GetPlayers()) do
+        if not hasItemEquipped(player) then
+            local giveArgs = {player.UserId, 932}
+            local success, result = pcall(function()
+                ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+            end)
+            if not success then
+                warn("Give item failed for " .. player.Name .. ":", result)
+            end
+        end
+    end
+end
+
+while true do
+    if not isRunning then
+        isRunning = true
+        
+        equipItem()
+        giveItemToAllPlayers()
+        unEquip()
+        
+        isRunning = false
+    else
+        wait(1)
+    end
+    wait(2)
+end
+
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Throw snowball all",
+   Callback = function()
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local ThrowItemEvent = ReplicatedStorage.EventConnections.ThrowItem
+local RunService = game:GetService("RunService")
+
+local function getRandomPlayer()
+    local allPlayers = Players:GetPlayers()
+    local randomIndex = math.random(1, #allPlayers)
+    local randomPlayer = allPlayers[randomIndex]
+    if randomPlayer and randomPlayer.Character and randomPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        return randomPlayer
+    else
+        return nil
+    end
+end
+
+local function throwAtRandomPlayer()
+    local randomPlayer = getRandomPlayer()
+    if randomPlayer then
+        local targetPosition = randomPlayer.Character.HumanoidRootPart.Position
+        local args = {
+            [1] = string.format("[932,[\"%s\",\"%s\",\"%s\"],[\"%s\",\"%s\",\"%s\"],[\"%s\",\"%s\",\"%s\"],75]",
+                tostring(targetPosition.X), tostring(targetPosition.Y), tostring(targetPosition.Z),
+                tostring(targetPosition.X + 3), tostring(targetPosition.Y + 3), tostring(targetPosition.Z + 3),
+                tostring(targetPosition.X - 3), tostring(targetPosition.Y - 3), tostring(targetPosition.Z - 3))
+        }
+        ThrowItemEvent:FireServer(unpack(args))
+    end
+end
+
+RunService.Heartbeat:Connect(function()
+    for _ = 1, 1 do
+        throwAtRandomPlayer()
+    end
+end)
+   end,
+})
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local mensagem = ""
+
+local Input = Tab:CreateInput({
+    Name = "Mensagem privada",
+    CurrentValue = "",
+    PlaceholderText = "mensagem",
+    RemoveTextAfterFocusLost = false,
+    Flag = "Input1",
+    Callback = function(Text)
+        mensagem = Text
+    end,
+})
+
+local Button = Tab:CreateButton({
+    Name = "Enviar mensagem privada para todos (amigos no servidor)",
+    Callback = function()
+        if mensagem ~= "" then
+            for _, jogador in ipairs(Players:GetPlayers()) do
+                local prepareArgs = {
+                    [1] = jogador.UserId,
+                    [2] = mensagem
+                }
+                ReplicatedStorage.FunctionConnections.PrepareComposeWhisper:InvokeServer(unpack(prepareArgs))
+
+                local sendArgs = {
+                    [1] = jogador.UserId
+                }
+                ReplicatedStorage.EventConnections.SendPreparedWhisper:FireServer(unpack(sendArgs))
+            end
+        else
+            print("Por favor, insira uma mensagem no campo de entrada.")
+        end
+    end,
+})
+
+local Button = Tab:CreateButton({
+    Name = "Enviar solicitação de amizade para todos no servidor",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        for _, jogador in ipairs(Players:GetPlayers()) do
+            local statusArgs = {
+                [1] = jogador.UserId
+            }
+            ReplicatedStorage.FunctionConnections.RequestPlayerStatusResponseForUserId:InvokeServer(unpack(statusArgs))
+
+            local bioArgs = {
+                [1] = jogador.UserId
+            }
+            ReplicatedStorage.FunctionConnections.RequestPlayerBioForUserId:InvokeServer(unpack(bioArgs))
+
+            local friendArgs = {
+                [1] = jogador
+            }
+            ReplicatedStorage.FunctionConnections.RequestSendFriendRequest:InvokeServer(unpack(friendArgs))
+        end
+    end,
+})
+
+local Button = Tab:CreateButton({
+    Name = "Remover amizade de todos no servidor",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        for _, jogador in ipairs(Players:GetPlayers()) do
+            if jogador ~= Players.LocalPlayer then
+                local statusArgs = {
+                    [1] = jogador.UserId
+                }
+                ReplicatedStorage.FunctionConnections.RequestPlayerStatusResponseForUserId:InvokeServer(unpack(statusArgs))
+
+                local bioArgs = {
+                    [1] = jogador.UserId
+                }
+                ReplicatedStorage.FunctionConnections.RequestPlayerBioForUserId:InvokeServer(unpack(bioArgs))
+
+                local removeFriendArgs = {
+                    [1] = jogador.UserId
+                }
+                ReplicatedStorage.FunctionConnections.RequestRemoveFriend:InvokeServer(unpack(removeFriendArgs))
+            end
+        end
+
+        ReplicatedStorage.FunctionConnections.RequestAllPlayerFriends:InvokeServer()
+    end,
+})
+
+local Section = Tab:CreateSection("As pessoas receberão a solicitação novamente ao recusá-la.")
+local Button = Tab:CreateButton({
+    Name = "Solicitar teletransporte para todos no servidor (amigos)",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+        local function sendInviteToAllPlayers()
+            while true do
+                for _, jogador in ipairs(Players:GetPlayers()) do
+                    local statusArgs = { [1] = jogador.UserId }
+                    ReplicatedStorage.FunctionConnections.RequestPlayerStatusResponseForUserId:InvokeServer(unpack(statusArgs))
+
+                    local bioArgs = { [1] = jogador.UserId }
+                    ReplicatedStorage.FunctionConnections.RequestPlayerBioForUserId:InvokeServer(unpack(bioArgs))
+
+                    local locationArgs = { [1] = jogador.UserId }
+                    ReplicatedStorage.FunctionConnections.RequestPlayerLocationForUserId:InvokeServer(unpack(locationArgs))
+
+                    local inviteFromArgs = { [1] = jogador.UserId }
+                    ReplicatedStorage.FunctionConnections.RequestInviteFromFriend:InvokeServer(unpack(inviteFromArgs))
+
+                    local sendInviteArgs = { [1] = jogador.UserId }
+                    ReplicatedStorage.FunctionConnections.RequestSendInviteToFriend:InvokeServer(unpack(sendInviteArgs))
+                end
+                wait(0)
+            end
+        end
+
+        sendInviteToAllPlayers()
+    end,
+})
+
+local Section = Tab:CreateSection("Configurações Opcionais")
+
+local isRealTimePlayerCountEnabled = false
+
+local function updatePlayerCountNotification()
+    if isRealTimePlayerCountEnabled then
+        local playerCount = #game.Players:GetPlayers()
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Contagem de Jogadores",
+            Text = "Atualmente, há " .. playerCount .. " jogadores no jogo.",
+            Icon = "rbxassetid://130225201432137",
+            Duration = 5
+        })
+    end
+end
+
+
+local Toggle = Tab:CreateToggle({
+   Name = "Contagem real de jogadores no servidor",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+      isRealTimePlayerCountEnabled = value
+
+        if isRealTimePlayerCountEnabled then
+            updatePlayerCountNotification()
+
+            game.Players.PlayerAdded:Connect(function(player)
+                if isRealTimePlayerCountEnabled then
+                    updatePlayerCountNotification()
+                end
+            end)
+
+            game.Players.PlayerRemoving:Connect(function(player)
+                if isRealTimePlayerCountEnabled then
+                    updatePlayerCountNotification()
+                end
+            end)
+        end
+   end,
+})
+
+game.Players.PlayerAdded:Connect(function(player)
+    if isRealTimePlayerCountEnabled then
+        local playerHeadIcon = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Jogador Entrou",
+            Text = player.Name .. " entrou no jogo.",
+            Icon = playerHeadIcon,
+            Duration = 5
+        })
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    if isRealTimePlayerCountEnabled then
+        local playerHeadIcon = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "Jogador Saiu",
+            Text = player.Name .. " saiu do jogo.",
+            Icon = playerHeadIcon,
+            Duration = 5
+        })
+    end
+end)
+
+local Button = Tab:CreateButton({
+   Name = "Chat Nazista",
+   Callback = function()
+local TextChatService = game:GetService("TextChatService")
+
+local lines = {
+    "⬜⬜⬜⬜⬜⬜⬜",
+    "⬜⬛⬜⬛⬛⬛⬜",
+    "⬜⬛⬜⬛⬜⬜⬜",
+    "⬜⬛⬛⬛⬛⬛⬜",
+    "⬜⬜⬜⬛⬜⬛⬜",
+    "⬜⬛⬛⬛⬜⬛⬜",
+    "⬜⬜⬜⬜⬜⬜⬜"
+}
+
+local function sendMessage(message)
+    local textChannel = TextChatService:WaitForChild("TextChannels"):FindFirstChild("RBXGeneral")
+    if textChannel then
+        textChannel:SendAsync(message)
+    end
+end
+
+for _, line in ipairs(lines) do
+    sendMessage(line)
+    wait(0) 
+end
+   end,
+})
+
+local chatButton = Tab:CreateButton({
+    Name = "Chat dildo", 
+    Callback = function()
+        local TextChatService = game:GetService("TextChatService")
+
+        local linhas = {
+            "⬜⬜⬜⬜⬜⬜⬜⬜",
+            "⬜⬜⬜⬛⬛⬜⬜⬜",
+            "⬜⬜⬜⬛⬛⬜⬜⬜",
+            "⬜⬜⬜⬛⬛⬜⬜⬜",
+            "⬜⬜⬜⬛⬛⬜⬜⬜",
+            "⬜⬜⬜⬛⬛⬜⬜⬜",
+            "⬜⬛⬛⬜⬜⬛⬛⬜",
+            "⬜⬛⬛⬜⬜⬛⬛⬜"
+        }
+
+        local function enviarMensagem(mensagem)
+            local textChannel = TextChatService:WaitForChild("TextChannels"):FindFirstChild("RBXGeneral")
+            if textChannel then
+                textChannel:SendAsync(mensagem)
+            end
+        end
+
+        for _, linha in ipairs(linhas) do
+            enviarMensagem(linha)
+            wait(0) 
+        end
+    end,
+})
+
+local vibrateButton = Tab:CreateButton({
+    Name = "Furacão Bósnia",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = Players.LocalPlayer
+        local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+        local ScreenGui = Instance.new("ScreenGui")
+        local Frame = Instance.new("Frame")
+        local ToggleButton = Instance.new("TextButton")
+        local Title = Instance.new("TextLabel")
+
+        ScreenGui.Parent = game.CoreGui
+        ScreenGui.Name = "GUIFuracaoBósnia"
+
+        Frame.Name = "MainFrame"
+        Frame.Parent = ScreenGui
+        Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        Frame.BorderSizePixel = 0
+        Frame.Size = UDim2.new(0, 200, 0, 100)
+        Frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+        Frame.Draggable = true
+        Frame.Active = true
+
+        Title.Name = "Title"
+        Title.Parent = Frame
+        Title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Title.Size = UDim2.new(1, 0, 0, 25)
+        Title.Font = Enum.Font.SourceSansBold
+        Title.Text = "Discord: plusgiant"
+        Title.TextColor3 = Color3.new(1, 1, 1)
+        Title.TextSize = 16
+
+        ToggleButton.Name = "ToggleButton"
+        ToggleButton.Parent = Frame
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        ToggleButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+        ToggleButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+        ToggleButton.Font = Enum.Font.SourceSans
+        ToggleButton.Text = "Ativar Furacão Bósnia"
+        ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+        ToggleButton.TextSize = 16
+        ToggleButton.BorderSizePixel = 0
+
+        local Vibrando = false
+        local ConexaoVibracao
+
+        local function AlternarVibracao()
+            Vibrando = not Vibrando
+
+            if Vibrando then
+                ToggleButton.Text = "Parar Furacão Bósnia"
+                
+                if Character and Character:FindFirstChild("HumanoidRootPart") then
+                    Character.HumanoidRootPart.Anchored = true
+                end
+
+                ConexaoVibracao = RunService.Stepped:Connect(function()
+                    if Character and Character:FindFirstChild("HumanoidRootPart") and Character:FindFirstChild("Head") then
+                        local root = Character.HumanoidRootPart
+                        local head = Character.Head
+
+                        root.CFrame = root.CFrame * CFrame.new(
+                            math.random(-5, 5) * 0.05,
+                            math.random(-5, 5) * 0.05,
+                            math.random(-5, 5) * 0.05
+                        )
+
+                        head.CFrame = head.CFrame * CFrame.Angles(0, math.rad(math.random(-30, 30)), 0)
+
+                        root.CFrame = root.CFrame * CFrame.Angles(0, math.rad(math.random(-20, 20)), 0)
+                    end
+                end)
+            else
+                ToggleButton.Text = "Ativar Furacão Bósnia"
+
+                if Character and Character:FindFirstChild("HumanoidRootPart") then
+                    Character.HumanoidRootPart.Anchored = false
+                end
+
+                if ConexaoVibracao then
+                    ConexaoVibracao:Disconnect()
+                end
+
+                if Character and Character:FindFirstChild("Head") then
+                    Character.Head.CFrame = Character.HumanoidRootPart.CFrame
+                end
+            end
+        end
+
+        ToggleButton.MouseButton1Click:Connect(AlternarVibracao)
+    end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Giro Rápido",
+   Callback = function()
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ToggleButton = Instance.new("TextButton")
+local Title = Instance.new("TextLabel")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "GUIGiroRapido"
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.BorderSizePixel = 0
+Frame.Size = UDim2.new(0, 200, 0, 100)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+Frame.Draggable = true
+Frame.Active = true
+
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Title.Size = UDim2.new(1, 0, 0, 25)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "Discord: plusgiant"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextSize = 16
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Frame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ToggleButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+ToggleButton.Font = Enum.Font.SourceSans
+ToggleButton.Text = "Ativar Giro Rápido"
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+ToggleButton.TextSize = 16
+ToggleButton.BorderSizePixel = 0
+
+local IsToggled = false
+local BackAndForthConnection
+
+local function AlternarGiro()
+    IsToggled = not IsToggled
+
+    if IsToggled then
+        ToggleButton.Text = "Parar Giro Rápido"
+
+        BackAndForthConnection = RunService.Heartbeat:Connect(function()
+            if Character and Character:FindFirstChild("HumanoidRootPart") then
+                local root = Character.HumanoidRootPart
+                local currentLookVector = root.CFrame.LookVector
+
+                if currentLookVector.Z > 0 then
+                    root.CFrame = root.CFrame * CFrame.Angles(0, math.pi, 0)
+                else
+                    root.CFrame = root.CFrame * CFrame.Angles(0, math.pi, 0)
+                end
+
+                wait(0.1)
+            end
+        end)
+    else
+        ToggleButton.Text = "Ativar Giro Rápido"
+        if BackAndForthConnection then
+            BackAndForthConnection:Disconnect()
+        end
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(AlternarGiro)
+
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Habilitar Inventário",
+   Callback = function()
+       game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, true)
+       game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+       game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, true)
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Equipar todas as varas de pescar (Manual, Opcional)",
+   Callback = function()
+       local player = game.Players.LocalPlayer
+       local character = player.Character or player.CharacterAdded:Wait()
+       local backpack = player:WaitForChild("Backpack")
+
+       local function equipAllTools()
+           for _, tool in pairs(backpack:GetChildren()) do
+               if tool:IsA("Tool") then
+                   tool.Parent = character -- Equip the tool
+               end
+           end
+       end
+
+       equipAllTools()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Equipar vara de pescar (Manual, Opcional)",
+   Callback = function()
+       local ReplicatedStorage = game:GetService("ReplicatedStorage")
+       local Workspace = game:GetService("Workspace")
+
+       local function getItem()
+           ReplicatedStorage.Connection:InvokeServer(9, 0)
+           wait(0.1)
+
+           ReplicatedStorage.Connection:InvokeServer(9, 1)
+
+           ReplicatedStorage.Connection:InvokeServer(49)
+           ReplicatedStorage.Connection:InvokeServer(50)
+           ReplicatedStorage.Connection:InvokeServer(51)
+           
+           local ohNumber1 = 11
+           local ohTable2 = {
+               ["FishingPolePos"] = Workspace.TempFish.Position,
+               ["Power"] = math.random(),
+               ["Face"] = Workspace.TempFish.Position,
+               ["PlayerPos"] = Workspace.TempFish.Position,
+               ["FishingZonePos"] = Vector3.new(-5.29345703, -18.0412292, 43.7173767),
+           }
+           ReplicatedStorage.Connection:InvokeServer(ohNumber1, ohTable2)
+       end
+
+       getItem()
+   end,
+})
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local backpack = player:WaitForChild("Backpack")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local Toggle = false 
+
+local function equipAllTools()
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = character 
+        end
+    end
+end
+
+local function getItem()
+    ReplicatedStorage.Connection:InvokeServer(9, 0)
+    wait(0.1)
+
+    ReplicatedStorage.Connection:InvokeServer(9, 1)
+
+    ReplicatedStorage.Connection:InvokeServer(49)
+    ReplicatedStorage.Connection:InvokeServer(50)
+    ReplicatedStorage.Connection:InvokeServer(51)
+
+    local ohNumber1 = 11
+    local ohTable2 = {
+        ["FishingPolePos"] = Workspace.TempFish.Position,
+        ["Power"] = math.random(),
+        ["Face"] = Workspace.TempFish.Position,
+        ["PlayerPos"] = Workspace.TempFish.Position,
+        ["FishingZonePos"] = Vector3.new(-5.29345703, -18.0412292, 43.7173767),
+    }
+    ReplicatedStorage.Connection:InvokeServer(ohNumber1, ohTable2)
+end
+
+local function startFishing()
+    while Toggle do
+        for _ = 1, 1 do
+            spawn(function() 
+                equipAllTools()
+            end)
+
+            spawn(function()
+                getItem()
+            end)
+        end
+        wait(0)
+    end
+end
+
+local Toggle = Tab:CreateToggle({
+   Name = "Loop Equipar Varas de Pesca (Sem Lags)",
+   CurrentValue = false,
+   Flag = "Toggle1", 
+   Callback = function(value)
+       Toggle = value
+       if Toggle then
+           startFishing()
+       end
+   end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Loop Soltar Varas",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(value)
+       isSpamming = value
+        
+       if isSpamming then
+           spawn(function()
+               while isSpamming do
+                   game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Backspace, false, game)
+                   wait(0)
+               end
+           end)
+       end
+   end,
+})
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local localPlayer = Players.LocalPlayer
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+
+local spinningToggle = false
+local activeSpinConnections = {}
+
+local function spinAroundPlayer(targetPlayer)
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not rootPart then return end
+
+    local targetCharacter = targetPlayer.Character
+    if not targetCharacter then return end
+
+    local targetRoot = targetCharacter:FindFirstChild("HumanoidRootPart")
+    if not targetRoot then return end
+
+    local spinDuration = 2
+    local radius = 6
+    local spinSpeed = 720
+
+    local startTime = tick()
+    local connection
+
+    connection = RunService.Heartbeat:Connect(function()
+        if not spinningToggle then
+            connection:Disconnect()
+            return
+        end
+
+        local elapsedTime = tick() - startTime
+        if elapsedTime > spinDuration then
+            connection:Disconnect()
+            return
+        end
+
+        local angle = math.rad((elapsedTime * spinSpeed) % 360)
+        local offset = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+        local targetPosition = targetRoot.Position + offset
+
+        rootPart.CFrame = CFrame.new(targetPosition, targetRoot.Position)
+    end)
+
+    table.insert(activeSpinConnections, connection)
+    wait(spinDuration)
+end
+
+local function spinAroundAllPlayers()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            pcall(function()
+                spinAroundPlayer(player)
+            end)
+        end
+    end
+end
+
+local function startSpinning()
+    while spinningToggle do
+        spinAroundAllPlayers()
+        wait(0.1)
+    end
+end
+
+local function stopSpinning()
+    for _, connection in ipairs(activeSpinConnections) do
+        connection:Disconnect()
+    end
+    activeSpinConnections = {}
+end
+
+local SpinToggle = Tab:CreateToggle({
+    Name = "Girar ao redor dos Jogadores",
+    CurrentValue = false,
+    Flag = "SpinToggle",
+    Callback = function(value)
+        spinningToggle = value
+        if spinningToggle then
+            spawn(startSpinning)
+        else
+            stopSpinning()
+        end
+    end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "LAG SERVER",
+   Callback = function()
+       while true do 
+    game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(9)
+    game:GetService("Players").LocalPlayer.Character.Fishing.Parent = game:GetService("Players").LocalPlayer.Backpack
+    task.wait()
+    game:GetService("Players").LocalPlayer.Backpack.Fishing.Parent = game:GetService("Players").LocalPlayer.Character 
+end
+   end,
+})
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local backpack = player:WaitForChild("Backpack")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local Toggle = false
+local isSpamming = false
+
+local function equipAllTools()
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = character
+        end
+    end
+end
+
+local function getItem()
+    ReplicatedStorage.Connection:InvokeServer(9, 0)
+    wait(0.1)
+
+    ReplicatedStorage.Connection:InvokeServer(9, 1)
+
+    ReplicatedStorage.Connection:InvokeServer(49)
+    ReplicatedStorage.Connection:InvokeServer(50)
+    ReplicatedStorage.Connection:InvokeServer(51)
+
+    local ohNumber1 = 11
+    local ohTable2 = {
+        ["FishingPolePos"] = Workspace.TempFish.Position,
+        ["Power"] = math.random(),
+        ["Face"] = Workspace.TempFish.Position,
+        ["PlayerPos"] = Workspace.TempFish.Position,
+        ["FishingZonePos"] = Vector3.new(-5.29345703, -18.0412292, 43.7173767),
+    }
+    ReplicatedStorage.Connection:InvokeServer(ohNumber1, ohTable2)
+end
+
+local function startFishing()
+    while Toggle do
+        for _ = 1, 500 do
+            spawn(function()
+                equipAllTools()
+            end)
+
+            spawn(function()
+                getItem()
+            end)
+        end
+        wait(0)
+    end
+end
+
+local Button = Tab:CreateButton({
+    Name = "LAG SERVER 2",
+    Callback = function()
+        isSpamming = true
+        spawn(function()
+            while isSpamming do
+                game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Backspace, false, game)
+                wait(1)
+            end
+        end)
+
+        Toggle = true
+        startFishing()
+    end,
+})
+
+local Tab = Window:CreateTab("Jogador", 107773970772705) -- Título, Imagem
+
+local Input = Tab:CreateInput({
+   Name = "Velocidade de Caminhada",
+   CurrentValue = "",
+   PlaceholderText = "insira a velocidade",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Value)
+   getgenv().WalkSpeedValue = Value;
+local Player = game:service'Players'.LocalPlayer;
+Player.Character.Humanoid:GetPropertyChangedSignal'WalkSpeed':Connect(function()
+Player.Character.Humanoid.WalkSpeed = getgenv().WalkSpeedValue;
+end)
+Player.Character.Humanoid.WalkSpeed = getgenv().WalkSpeedValue;
+   end,
+})
+
+local Input = Tab:CreateInput({
+   Name = "Zoom Máximo da Câmera",
+   CurrentValue = "",
+   PlaceholderText = "insira o zoom",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Value)
+        game.Players.LocalPlayer.CameraMaxZoomDistance = (Value)
+   end,
+})
+
+local Input = Tab:CreateInput({
+   Name = "Potência do Salto",
+   CurrentValue = "",
+   PlaceholderText = "insira a potência do salto",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Value)
+ getgenv().JumpPowerValue = Value;
+local Player = game:service'Players'.LocalPlayer;
+Player.Character.Humanoid:GetPropertyChangedSignal'JumpPower':Connect(function()
+Player.Character.Humanoid.JumpPower = getgenv().JumpPowerValue;
+end)
+Player.Character.Humanoid.JumpPower = getgenv().JumpPowerValue;
+   end,
+})
+
+local Input = Tab:CreateInput({
+   Name = "FOV (Original = 70)",
+   CurrentValue = "",
+   PlaceholderText = "insira o FOV",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Value)
+        game.Players.LocalPlayer.CameraMaxZoomDistance = (Value)
+   end,
+})
+
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local spinSpeed = 10
+local isSpinning = false
+
+local function getRoot(character)
+    return character:FindFirstChild("HumanoidRootPart")
+end
+
+local function createSpin(speed)
+    local rootPart = getRoot(character)
+    if rootPart then
+        for _, v in pairs(rootPart:GetChildren()) do
+            if v.Name == "Spinning" then
+                v:Destroy()
+            end
+        end
+
+        local spin = Instance.new("BodyAngularVelocity")
+        spin.Name = "Spinning"
+        spin.Parent = rootPart
+        spin.MaxTorque = Vector3.new(0, math.huge, 0)
+        spin.AngularVelocity = Vector3.new(0, speed, 0)
+    else
+        warn("HumanoidRootPart não encontrada.")
+    end
+end
+
+local function removeSpin()
+    local rootPart = getRoot(character)
+    if rootPart then
+        for _, v in pairs(rootPart:GetChildren()) do
+            if v.Name == "Spinning" then
+                v:Destroy()
+            end
+        end
+    end
+end
+
+local SpinSpeedInput = Tab:CreateInput({
+    Name = "Definir Velocidade de Rotação",
+    CurrentValue = tostring(spinSpeed),
+    PlaceholderText = "insira a velocidade de rotação",
+    RemoveTextAfterFocusLost = false,
+    Flag = "SpinSpeedInput",
+    Callback = function(Text)
+        local newSpeed = tonumber(Text)
+        if newSpeed then
+            spinSpeed = newSpeed
+            if isSpinning then
+                createSpin(spinSpeed)
+            end
+        else
+            warn("Entrada inválida. Por favor, insira um número.")
+        end
+    end,
+})
+
+local LoseYourselfActive = false
+
+local Toggle = Tab:CreateToggle({
+    Name = "Perder-se",
+    CurrentValue = false,
+    Flag = "ToggleLoseYourself",
+    Callback = function(Value)
+        if LoseYourselfActive then
+            UNLOSEYOURSELF()
+        else
+            LOSEYOURSELF()
+        end
+        LoseYourselfActive = not LoseYourselfActive
+    end,
+})
+
+function LOSEYOURSELF()
+    workspace.Gravity = 0
+
+    local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+    local rootPart = game.Players.LocalPlayer.Character and getRoot(game.Players.LocalPlayer.Character)
+
+    if humanoid and rootPart then
+        humanoid.Sit = true
+        task.wait(0.1)
+        rootPart.CFrame = rootPart.CFrame * CFrame.Angles(math.pi * 0.5, 0, 0)
+        for _, animTrack in ipairs(humanoid:GetPlayingAnimationTracks()) do
+            animTrack:Stop()
+        end
+
+        for _, v in pairs(rootPart:GetChildren()) do
+            if v.Name == "Spinning" then
+                v:Destroy()
+            end
+        end
+
+        local spin = Instance.new("BodyAngularVelocity")
+        spin.Name = "Spinning"
+        spin.Parent = rootPart
+        spin.MaxTorque = Vector3.new(0, math.huge, 0)
+        spin.AngularVelocity = Vector3.new(0, 2, 0)
+    else
+        warn("Humanoid ou HumanoidRootPart não encontrados.")
+    end
+end
+
+function UNLOSEYOURSELF()
+    workspace.Gravity = 196.2
+
+    local rootPart = game.Players.LocalPlayer.Character and getRoot(game.Players.LocalPlayer.Character)
+    if rootPart then
+        for _, v in pairs(rootPart:GetChildren()) do
+            if v.Name == "Spinning" then
+                v:Destroy()
+            end
+        end
+    end
+end
+
+local FLYING = false
+
+local function sFLY()
+    FLYING = true
+    repeat task.wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+    local T = game.Players.LocalPlayer.Character.PrimaryPart
+    local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+    local SPEED = 0
+    local BG = Instance.new('BodyGyro')
+    local BV = Instance.new('BodyVelocity')
+
+    BG.P = 9e4
+    BG.Parent = T
+    BV.Parent = T
+    BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+    BG.cframe = T.CFrame
+    BV.velocity = Vector3.new(0, 0, 0)
+    BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
+
+    local userInputService = game:GetService("UserInputService")
+
+    local humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
+    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    humanoid.PlatformStand = true
+
+    userInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.W then CONTROL.F = 1 end
+            if input.KeyCode == Enum.KeyCode.S then CONTROL.B = -1 end
+            if input.KeyCode == Enum.KeyCode.A then CONTROL.L = -1 end
+            if input.KeyCode == Enum.KeyCode.D then CONTROL.R = 1 end
+            if input.KeyCode == Enum.KeyCode.Space then CONTROL.E = 1 end
+            if input.KeyCode == Enum.KeyCode.LeftControl then CONTROL.Q = -1 end
+        end
+    end)
+
+    userInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            if input.KeyCode == Enum.KeyCode.W then CONTROL.F = 0 end
+            if input.KeyCode == Enum.KeyCode.S then CONTROL.B = 0 end
+            if input.KeyCode == Enum.KeyCode.A then CONTROL.L = 0 end
+            if input.KeyCode == Enum.KeyCode.D then CONTROL.R = 0 end
+            if input.KeyCode == Enum.KeyCode.Space then CONTROL.E = 0 end
+            if input.KeyCode == Enum.KeyCode.LeftControl then CONTROL.Q = 0 end
+        end
+    end)
+
+    task.spawn(function()
+        repeat task.wait()
+            if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+                SPEED = 50
+            else
+                SPEED = 0
+            end
+
+            BV.velocity = ((workspace.CurrentCamera.CFrame.LookVector * (CONTROL.F + CONTROL.B)) +
+                            ((workspace.CurrentCamera.CFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CFrame.p)) * SPEED
+            BG.cframe = workspace.CurrentCamera.CFrame
+        until not FLYING
+        BG:Destroy()
+        BV:Destroy()
+
+        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        humanoid.PlatformStand = false
+    end)
+end
+
+local function NOFLY()
+    FLYING = false
+    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+        local humanoid = game.Players.LocalPlayer.Character.Humanoid
+        humanoid.PlatformStand = false
+        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    end
+end
+
+local FlyToggle = Tab:CreateToggle({
+    Name = "Voar/Desvoar",
+    CurrentValue = false,
+    Flag = "FlyToggle",
+    Callback = function(Value)
+        if Value then
+            if FLYING == false then
+                sFLY()
+            end
+        else
+            if FLYING == true then
+                NOFLY()
+            end
+        end
+    end,
+})
+
+-- Cria o alternador com uma tecla
+local FlyKeybind = Tab:CreateKeybind({
+    Name = "Tecla para Voar/Desvoar",
+    CurrentKeybind = "F", 
+    HoldToInteract = false,
+    Flag = "FlyKeybind", 
+    Callback = function(Keybind)
+        if FLYING then
+            NOFLY()
+        else
+            sFLY()
+        end
+    end,
+})
+
+local Keybind = Tab:CreateKeybind({
+    Name = "Tecla para Perder-se",
+    CurrentKeybind = "E", 
+    HoldToInteract = false,
+    Flag = "KeybindLoseYourself",
+    Callback = function(Keybind)
+        if LoseYourselfActive then
+            UNLOSEYOURSELF()
+        else
+            LOSEYOURSELF()
+        end
+        LoseYourselfActive = not LoseYourselfActive
+    end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Loopar Animação",
+   Callback = function()
+       game.Players.LocalPlayer.Character.Animate.Disabled = true
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Parar Loop da Animação",
+   Callback = function()
+       game.Players.LocalPlayer.Character.Animate.Disabled = false
+   end,
+})
+
+local Input = Tab:CreateInput({
+   Name = "Velocidade da Animação",
+   CurrentValue = "",
+   PlaceholderText = "insira a velocidade",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(value)
+       local giga = game.Players.LocalPlayer.Character
+       local liga = giga:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
+
+       for i, v in next, liga:GetPlayingAnimationTracks() do
+           v:AdjustSpeed(value)
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Dobrar velocidade",
+   Callback = function()
+       local giga = game.Players.LocalPlayer.Character
+       local liga = giga:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
+
+       for i, v in next, liga:GetPlayingAnimationTracks() do
+           v:AdjustSpeed(v.Speed * 2)
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Diminuir velocidade",
+   Callback = function()
+       local giga = game.Players.LocalPlayer.Character
+       local liga = giga:FindFirstChildOfClass("Humanoid") or Char:FindFirstChildOfClass("AnimationController")
+
+       for i, v in next, liga:GetPlayingAnimationTracks() do
+           v:AdjustSpeed(v.Speed * 0.5)
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Resolução CS",
+   Callback = function()
+       getgenv().Resolution = {
+           [".gg/scripters"] = 0.7
+       }
+
+       local Camera = workspace.CurrentCamera
+       if getgenv().gg_scripters == nil then
+           game:GetService("RunService").RenderStepped:Connect(
+               function()
+                   Camera.CFrame = Camera.CFrame * CFrame.new(0, 0, 0, 1, 0, 0, 0, getgenv().Resolution[".gg/scripters"], 0, 0, 0, 1)
+               end
+           )
+       end
+       getgenv().gg_scripters = "Aori0001"
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Sentar",
+   Callback = function()
+       local Jogadores = game:GetService("Players")
+       local jogador = Jogadores.LocalPlayer
+       local personagem = jogador.Character or jogador.CharacterAdded:Wait()
+       local humanoide = personagem:WaitForChild("Humanoid")
+
+       local function fazerPersonagemSentar()
+           humanoide.Sit = true
+       end
+
+       fazerPersonagemSentar()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Deitar",
+   Callback = function()
+       local Humano = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character.Humanoid
+       if not Humano then
+           return
+       end
+       Humano.Sit = true
+       task.wait(.1)
+       Humano.RootPart.CFrame = Humano.RootPart.CFrame * CFrame.Angles(math.pi * .5, 0, 0)
+       for _, v in ipairs(Humano:GetPlayingAnimationTracks()) do
+           v:Stop()
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Dançar Bobamente",
+   Callback = function()
+       dancas = {"248263260", "27789359", "45834924", "28488254", "33796059", "30196114", "52155728"}
+       if game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').RigType == Enum.HumanoidRigType.R15 then
+           dancas = {"4555808220", "4555782893", "3333432454", "4049037604"}
+       end
+       if theanim then
+           theanim:Stop()
+           theanim:Destroy()
+           local animacao = Instance.new("Animation")
+           animacao.AnimationId = "rbxassetid://" .. dancas[math.random(1, #dancas)]
+           theanim = game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):LoadAnimation(animacao)
+           theanim:Play()
+       else
+           local animacao = Instance.new("Animation")
+           animacao.AnimationId = "rbxassetid://" .. dancas[math.random(1, #dancas)]
+           theanim = game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):LoadAnimation(animacao)
+           theanim:Play()
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Parar Danças",
+   Callback = function()
+       theanim:Stop()
+       theanim:Destroy()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Congelar",
+   Callback = function()
+       game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Descongelar",
+   Callback = function()
+       game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Lag Falso",
+   Callback = function()
+       FakeLag = true
+
+       repeat wait()
+           game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+           wait(0.05)
+           game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+           wait(0.05)
+       until FakeLag == false
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Parar Lag Falso",
+   Callback = function()
+       FakeLag = false
+   end,
+})
+
+local Tab = Window:CreateTab("Farming de Dinheiro", 86051749277671)
+local Section = Tab:CreateSection("Captura automática e venda de peixes no playground.")
+local Section = Tab:CreateSection("Quanto mais você clicar em 'Iniciar Agricultura', mais rápido será. (velocidade máxima é 15 cliques)")
+
+local Toggle = Tab:CreateToggle({
+   Name = "Spoof PLUS",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+       if Value then
+           game.Players.LocalPlayer:SetAttribute("PLUS", true)
+       else
+           game.Players.LocalPlayer:SetAttribute("PLUS", false)
+       end
+   end,
+})
+
+local antiAFK = false
+local Button = Tab:CreateButton({
+   Name = "Anti AFK",
+   Callback = function()
+       antiAFK = not antiAFK
+       if antiAFK then
+           local player = game.Players.LocalPlayer
+           local playerHeadIcon = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+
+           game.StarterGui:SetCore("SendNotification", {
+               Title = "Anti AFK",
+               Text = "Anti-AFK habilitado",
+               Icon = playerHeadIcon,
+               Duration = 3,
+               Button1 = "ok"
+           })
+           local vu = game:GetService("VirtualUser")
+           game.Players.LocalPlayer.Idled:Connect(function()
+               vu:CaptureController()
+               vu:ClickButton2(Vector2.new(0, 0))
+           end)
+       else
+           local player = game.Players.LocalPlayer
+           local playerHeadIcon = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
+           game.StarterGui:SetCore("SendNotification", {
+               Title = "Anti AFK",
+               Text = "Anti-AFK desabilitado (requer reinício para resetar conexão Idled)",
+               Icon = playerHeadIcon,
+               Duration = 3,
+               Button1 = "ok"
+           })
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Iniciar Agricultura",
+   Callback = function()
+       while true do
+           local args1 = { [1] = 10 }
+           game:GetService("ReplicatedStorage").ConnectionEvent:FireServer(unpack(args1))
+
+           local args2 = {
+               [1] = 11,
+               [2] = {
+                   ["Power"] = 1,
+                   ["FishingZonePos"] = Vector3.new(82.066064453125, -18.149871826171875, 96.40253448486328),
+                   ["Face"] = Vector3.new(0.9990392923355103, 0.005603702738881111, -0.04346461594104767),
+                   ["PlayerPos"] = Vector3.new(62.121219635009766, -12.388772010803223, 93.4290542602539),
+                   ["FishingPolePos"] = Vector3.new(64.75240325927734, -5.818235397338867, 94.7131118774414)
+               }
+           }
+           game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args2))
+
+           local args3 = { [1] = 49 }
+           game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args3))
+
+           local args4 = { [1] = 10 }
+           game:GetService("ReplicatedStorage").ConnectionEvent:FireServer(unpack(args4))
+
+           local args5 = { [1] = 50 }
+           game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args5))
+
+           local args6 = { [1] = 51 }
+           game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args6))
+
+           local args7 = { [1] = 9, [2] = 23 }
+           game:GetService("ReplicatedStorage").Connection:InvokeServer(unpack(args7))
+
+           wait(0)
+       end
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Rejogar",
+   Callback = function()
+       local TeleportService = game:GetService("TeleportService")
+       TeleportService:Teleport(game.PlaceId)
+   end,
+})
+
+local Tab = Window:CreateTab("Misc", 133113532239316) -- Title, Image
+local Section = Tab:CreateSection("admin")
+local Button = Tab:CreateButton({
+   Name = "Orca Admin",
+   Callback = function()
+        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/richie0866/orca/master/public/latest.lua"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Nameless Admin",
+   Callback = function()
+               loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source"))();
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Chat Logger",
+   Callback = function()
+                          if game:service('RunService'):IsStudio() then print('!STUDIO!') else
+    if game:service('CoreGui'):findFirstChild('LogHolder') then return nil
+    end
+end
+
+local LogHolder = Instance.new("ScreenGui")
+local Logs = Instance.new("Frame")
+local Scroll = Instance.new("ScrollingFrame")
+local Template = Instance.new("TextLabel")
+
+LogHolder.Name = "LogHolder"
+if game:service('RunService'):IsStudio() then LogHolder.Parent = game.Players.LocalPlayer.PlayerGui else
+    LogHolder.Parent = game.CoreGui
+end
+
+Logs.Name = "Logs"
+Logs.Parent = LogHolder
+Logs.AnchorPoint = Vector2.new(0.5, 0.5)
+Logs.BackgroundColor3 = Color3.new(0, 0, 0)
+Logs.Position = UDim2.new(0.200000003, 0, 0.200000003, 0)
+Logs.Size = UDim2.new(0, 400, 0, 250)
+Logs.Style = Enum.FrameStyle.DropShadow
+
+Scroll.Name = "Scroll"
+Scroll.Parent = Logs
+Scroll.BackgroundColor3 = Color3.new(0, 0, 0)
+Scroll.BackgroundTransparency = 1
+Scroll.BorderSizePixel = 0
+Scroll.Size = UDim2.new(1, 0, 1, 0)
+Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+Scroll.ScrollBarThickness = 6
+
+Template.Name = "Template"
+Template.Parent = Logs
+Template.BackgroundColor3 = Color3.new(1, 1, 1)
+Template.BackgroundTransparency = 1
+Template.Position = UDim2.new(0, 0, 0, -25)
+Template.Size = UDim2.new(1, 0, 0, 20)
+Template.Font = Enum.Font.ArialBold
+Template.Text = ""
+Template.TextColor3 = Color3.new(1, 1, 1)
+Template.TextSize = 15
+Template.TextXAlignment = Enum.TextXAlignment.Left
+Template.TextWrap = true
+
+Logs.Active = true
+Logs.Draggable = true
+
+local loggedTable = {}
+
+local getTotalSize = function()
+local totalSize = UDim2.new(0, 0, 0, 0)
+    
+    for i, v in next, loggedTable do
+        totalSize = totalSize + UDim2.new(0, 0, 0, v.Size.Y.Offset)
+    end
+    
+    return totalSize
+end
+
+local BUD = UDim2.new(0, 0, 0, 0)
+local TotalNum = 0
+
+local function GenLog(txt, colo, time)
+    local oldColo = Color3.fromRGB(0, 0, 0) 
+    
+    local Temp = Template:Clone()
+    Temp.Parent = Scroll
+    Temp.Name = txt..'Logged'
+    Temp.Text = tostring(txt)
+    Temp.Visible = true
+    Temp.Position = BUD + UDim2.new(0, 0, 0, 0)
+    if colo then oldColo = colo Temp.TextColor3 = colo elseif not colo then Temp.TextColor3 = Color3.fromRGB(200, 200, 200) end
+    local timeVal = Instance.new('StringValue', Temp)
+    timeVal.Name = 'TimeVal'
+    timeVal.Value = time
+
+    TotalNum = TotalNum + 1
+    
+    if not Temp.TextFits then repeat Temp.Size = UDim2.new(Temp.Size.X.Scale, Temp.Size.X.Offset, Temp.Size.Y.Scale, Temp.Size.Y.Offset + 10)
+        Temp.Text = txt
+    until Temp.TextFits 
+end
+
+    BUD = BUD + UDim2.new(0, 0, 0, Temp.Size.Y.Offset)
+    
+    table.insert(loggedTable, Temp)
+    
+    local totSize = getTotalSize()
+    
+    if totSize.Y.Offset >= Scroll.CanvasSize.Y.Offset then Scroll.CanvasSize = UDim2.new(totSize.X.Scale, totSize.X.Offset, totSize.Y.Scale, totSize.Y.Offset + 100)
+    Scroll.CanvasPosition = Scroll.CanvasPosition + Vector2.new(0, totSize.Y.Offset) 
+    end
+    
+    return Temp
+end
+
+local ChatData = ""
+
+local function SaveToFile()
+    local t = os.date("*t")
+    local dateDat = t['hour']..' '..t['min']..' '..t['sec']..' '..t['day']..'.'..t['month']..'.'..t['year']
+    
+    ChatData = ""
+    
+    for i, v in pairs(Scroll:GetChildren()) do
+        ChatData = ChatData..v.TimeVal.Value..' '..v.Text..'\n'
+    end
+    
+    writefile('ChatLogs '..dateDat..'.txt', ChatData)
+end
+
+local function Clear()
+    loggedTable = {}
+    ChatData = ""
+    Scroll.CanvasPosition = Vector2.new(0, 0)
+    for i, v in pairs(Scroll:GetChildren()) do
+        v:Destroy()
+    end
+    Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    BUD = UDim2.new(0, 0, 0, 0)
+end
+
+local LogPlr = function(plr)
+            plr.Chatted:connect(function(msg)
+                
+            local t = os.date("*t")
+            local dateDat = t['hour']..':'..t['min']..':'..t['sec']
+    
+            if string.len(msg) >= 1000 then return nil end
+            if string.lower(msg) == 'clear' and plr == game:service('Players').LocalPlayer then Clear() return nil end
+            if string.lower(msg) == 'savetofile' and plr == game:service('Players').LocalPlayer then SaveToFile() return nil end
+            if string.sub(msg, 1, 1):match('%p') and string.sub(msg, 2, 2):match('%a') and string.len(msg) >= 5 then GenLog(plr.Name..': '..msg, Color3.new(255, 0, 0), dateDat) else
+            GenLog(plr.Name..': '..msg, Color3.new(255, 255, 255), dateDat)
+            end
+    end)
+end
+
+for i, v in pairs(game.Players:GetChildren()) do
+    LogPlr(v)
+end
+
+game.Players.PlayerAdded:connect(function(plr)
+    LogPlr(plr)
+end)
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Remote Spy",
+   Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/refs/heads/master/SimpleSpy.lua'))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Dex",
+   Callback = function()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Item Giver",
+   Callback = function()
+       -- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local ScreenGui = Instance.new("ScreenGui")
+local Ui = Instance.new("Frame")
+local TextBox = Instance.new("TextBox")
+local TextLabel = Instance.new("TextLabel")
+local TextButton = Instance.new("TextButton")
+local TextButton_2 = Instance.new("TextButton")
+local TextButton_3 = Instance.new("TextButton")
+local TextButton_4 = Instance.new("TextButton")
+local TextButton_5 = Instance.new("TextButton")
+local TextButton_6 = Instance.new("TextButton")
+
+--Properties:
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Ui.Name = "Ui"
+Ui.Parent = ScreenGui
+Ui.AnchorPoint = Vector2.new(0.5, 0.5)
+Ui.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Ui.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Ui.BorderSizePixel = 0
+Ui.Position = UDim2.new(0.5, 0, 0.5, 0)
+Ui.Size = UDim2.new(0, 400, 0, 250)
+
+TextBox.Parent = Ui
+TextBox.BackgroundColor3 = Color3.fromRGB(162, 162, 162)
+TextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.037562713, 0, 0.167375669, 0)
+TextBox.Size = UDim2.new(0, 369, 0, 35)
+TextBox.ClearTextOnFocus = false
+TextBox.Font = Enum.Font.SourceSans
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.TextScaled = true
+TextBox.TextSize = 14.000
+TextBox.TextWrapped = true
+
+TextLabel.Parent = Ui
+TextLabel.BackgroundColor3 = Color3.fromRGB(197, 197, 197)
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(0, 400, 0, 27)
+TextLabel.Font = Enum.Font.SourceSansBold
+TextLabel.Text = "G1V3R Hax"
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextSize = 20.000
+
+TextButton.Parent = Ui
+TextButton.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.0363163762, 0, 0.495375782, 0)
+TextButton.Size = UDim2.new(0, 103, 0, 31)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Give Donut"
+TextButton.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton.TextScaled = true
+TextButton.TextSize = 14.000
+TextButton.TextWrapped = true
+
+TextButton_2.Parent = Ui
+TextButton_2.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_2.BorderSizePixel = 0
+TextButton_2.Position = UDim2.new(0.0338160694, 0, 0.644345522, 0)
+TextButton_2.Size = UDim2.new(0, 211, 0, 78)
+TextButton_2.Font = Enum.Font.SourceSans
+TextButton_2.Text = "Give chiken"
+TextButton_2.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton_2.TextScaled = true
+TextButton_2.TextSize = 14.000
+TextButton_2.TextWrapped = true
+
+TextButton_3.Parent = Ui
+TextButton_3.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_3.BorderSizePixel = 0
+TextButton_3.Position = UDim2.new(0.0363163762, 0, 0.339456618, 0)
+TextButton_3.Size = UDim2.new(0, 103, 0, 31)
+TextButton_3.Font = Enum.Font.SourceSans
+TextButton_3.Text = "Give Water"
+TextButton_3.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton_3.TextScaled = true
+TextButton_3.TextSize = 14.000
+TextButton_3.TextWrapped = true
+
+TextButton_4.Parent = Ui
+TextButton_4.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_4.BorderSizePixel = 0
+TextButton_4.Position = UDim2.new(0.304175258, 0, 0.339456618, 0)
+TextButton_4.Size = UDim2.new(0, 103, 0, 31)
+TextButton_4.Font = Enum.Font.SourceSans
+TextButton_4.Text = "Give MathBook"
+TextButton_4.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton_4.TextScaled = true
+TextButton_4.TextSize = 14.000
+TextButton_4.TextWrapped = true
+
+TextButton_5.Parent = Ui
+TextButton_5.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton_5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_5.BorderSizePixel = 0
+TextButton_5.Position = UDim2.new(0.304175258, 0, 0.495375782, 0)
+TextButton_5.Size = UDim2.new(0, 103, 0, 31)
+TextButton_5.Font = Enum.Font.SourceSans
+TextButton_5.Text = "Give Curry"
+TextButton_5.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton_5.TextScaled = true
+TextButton_5.TextSize = 14.000
+TextButton_5.TextWrapped = true
+
+TextButton_6.Parent = Ui
+TextButton_6.BackgroundColor3 = Color3.fromRGB(159, 0, 0)
+TextButton_6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton_6.BorderSizePixel = 0
+TextButton_6.Position = UDim2.new(0.583816051, 0, 0.336345524, 0)
+TextButton_6.Size = UDim2.new(0, 150, 0, 155)
+TextButton_6.Font = Enum.Font.SourceSans
+TextButton_6.Text = "Mod You'r Avatar"
+TextButton_6.TextColor3 = Color3.fromRGB(214, 214, 214)
+TextButton_6.TextSize = 23.000
+TextButton_6.TextWrapped = true
+
+-- Scripts:
+
+local function PIZCLXV_fake_script() -- Ui.drag 
+	local script = Instance.new('LocalScript', Ui)
+
+	local a=game:GetService("UserInputService")function dragify(b)dragToggle=nil;local c=0;dragInput=nil;dragStart=nil;local d=nil;function updateInput(e)local f=e.Position-dragStart;local g=UDim2.new(startPos.X.Scale,startPos.X.Offset+f.X,startPos.Y.Scale,startPos.Y.Offset+f.Y)game:GetService("TweenService"):Create(b,TweenInfo.new(0.25),{Position=g}):Play()end;b.InputBegan:Connect(function(e)if(e.UserInputType==Enum.UserInputType.MouseButton1 or e.UserInputType==Enum.UserInputType.Touch)and a:GetFocusedTextBox()==nil then dragToggle=true;dragStart=e.Position;startPos=b.Position;e.Changed:Connect(function()if e.UserInputState==Enum.UserInputState.End then dragToggle=false end end)end end)b.InputChanged:Connect(function(e)if e.UserInputType==Enum.UserInputType.MouseMovement or e.UserInputType==Enum.UserInputType.Touch then dragInput=e end end)game:GetService("UserInputService").InputChanged:Connect(function(e)if e==dragInput and dragToggle then updateInput(e)end end)end;dragify(script.Parent)
+end
+coroutine.wrap(PIZCLXV_fake_script)()
+local function IXWU_fake_script() -- TextButton.LocalScript 
+	local script = Instance.new('LocalScript', TextButton)
+
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	
+	-- Equip item function
+	local function equipItem()
+		local equipArgs = {201, 1372}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+		end)
+		if not success then
+			warn("Equip item failed:", result)
+		end
+	end
+	
+	
+	local function UnEquip()
+		local args = {
+			[1] = 202,
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args))
+	end
+	-- Give item to player by username
+	local function giveItemToPlayer(userId)
+		local giveArgs = {userId, 1372}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+		end)
+		if not success then
+			warn("Give item failed for userId " .. userId .. ":", result)
+		end
+	end
+	
+	-- Find a player by username or part of it
+	local function getPlayerByName(username)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Name:lower():sub(1, #username):lower() == username:lower() then
+				return player
+			end
+		end
+		return nil
+	end
+	
+	-- Button click event
+	script.Parent.MouseButton1Click:Connect(function()
+		local username = TextBox.Text
+		if username and username ~= "" then
+			local player = getPlayerByName(username)
+			if player then
+				-- Equip item to local player
+				equipItem()
+	
+				-- Give item to the local player and the targeted player
+				giveItemToPlayer(game.Players.LocalPlayer.UserId)
+				giveItemToPlayer(player.UserId)
+				wait(0)
+				UnEquip()
+			else
+				warn("Player not found!")
+			end
+		else
+			warn("Please enter a valid username!")
+		end
+	end)
+end
+coroutine.wrap(IXWU_fake_script)()
+local function LMFFR_fake_script() -- TextButton_2.LocalScript 
+	local script = Instance.new('LocalScript', TextButton_2)
+
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	
+	-- Equip item function
+	local function equipItem()
+		local equipArgs = {201, 932}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+		end)
+		if not success then
+			warn("Equip item failed:", result)
+		end
+	end
+	
+	local function UnEquip()
+		local args = {
+			[1] = 202,
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args))
+	end
+	
+	-- Give item to player by username
+	local function giveItemToPlayer(userId)
+		local giveArgs = {userId, 932}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+		end)
+		if not success then
+			warn("Give item failed for userId " .. userId .. ":", result)
+		end
+	end
+	
+	-- Find a player by username or part of it
+	local function getPlayerByName(username)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Name:lower():sub(1, #username):lower() == username:lower() then
+				return player
+			end
+		end
+		return nil
+	end
+	
+	-- Button click event
+	script.Parent.MouseButton1Click:Connect(function()
+		local username = TextBox.Text
+		if username and username ~= "" then
+			local player = getPlayerByName(username)
+			if player then
+				-- Equip item to local player
+				equipItem()
+	
+				-- Give item to the local player and the targeted player
+				giveItemToPlayer(game.Players.LocalPlayer.UserId)
+				giveItemToPlayer(player.UserId)
+				wait(0)
+				UnEquip()
+			else
+				warn("Player not found!")
+			end
+		else
+			warn("Please enter a valid username!")
+		end
+	end)
+end
+coroutine.wrap(LMFFR_fake_script)()
+local function AJYB_fake_script() -- TextButton_3.LocalScript 
+	local script = Instance.new('LocalScript', TextButton_3)
+
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	
+	-- Equip item function
+	local function equipItem()
+		local equipArgs = {201, 1344}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+		end)
+		if not success then
+			warn("Equip item failed:", result)
+		end
+	end
+	
+	local function UnEquip()
+		local args = {
+			[1] = 202,
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args))
+	end
+	
+	-- Give item to player by username
+	local function giveItemToPlayer(userId)
+		local giveArgs = {userId, 1344}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+		end)
+		if not success then
+			warn("Give item failed for userId " .. userId .. ":", result)
+		end
+	end
+	
+	-- Find a player by username or part of it
+	local function getPlayerByName(username)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Name:lower():sub(1, #username):lower() == username:lower() then
+				return player
+			end
+		end
+		return nil
+	end
+	
+	-- Button click event
+	script.Parent.MouseButton1Click:Connect(function()
+		local username = TextBox.Text
+		if username and username ~= "" then
+			local player = getPlayerByName(username)
+			if player then
+				-- Equip item to local player
+				equipItem()
+	
+				-- Give item to the local player and the targeted player
+				giveItemToPlayer(game.Players.LocalPlayer.UserId)
+				giveItemToPlayer(player.UserId)
+				wait(0)
+				UnEquip()
+			else
+				warn("Player not found!")
+			end
+		else
+			warn("Please enter a valid username!")
+		end
+	end)
+end
+coroutine.wrap(AJYB_fake_script)()
+local function NBJR_fake_script() -- TextButton_4.LocalScript 
+	local script = Instance.new('LocalScript', TextButton_4)
+
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	
+	-- Equip item function
+	local function equipItem()
+		local equipArgs = {201, 1141}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+		end)
+		if not success then
+			warn("Equip item failed:", result)
+		end
+	end
+	
+	local function UnEquip()
+		local args = {
+			[1] = 202,
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args))
+	end
+	
+	-- Give item to player by username
+	local function giveItemToPlayer(userId)
+		local giveArgs = {userId, 1141}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+		end)
+		if not success then
+			warn("Give item failed for userId " .. userId .. ":", result)
+		end
+	end
+	
+	-- Find a player by username or part of it
+	local function getPlayerByName(username)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Name:lower():sub(1, #username):lower() == username:lower() then
+				return player
+			end
+		end
+		return nil
+	end
+	
+	-- Button click event
+	script.Parent.MouseButton1Click:Connect(function()
+		local username = TextBox.Text
+		if username and username ~= "" then
+			local player = getPlayerByName(username)
+			if player then
+				-- Equip item to local player
+				equipItem()
+	
+				-- Give item to the local player and the targeted player
+				giveItemToPlayer(game.Players.LocalPlayer.UserId)
+				giveItemToPlayer(player.UserId)
+				wait(0)
+				UnEquip()
+			else
+				warn("Player not found!")
+			end
+		else
+			warn("Please enter a valid username!")
+		end
+	end)
+end
+coroutine.wrap(NBJR_fake_script)()
+local function OQTJV_fake_script() -- TextButton_5.LocalScript 
+	local script = Instance.new('LocalScript', TextButton_5)
+
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	
+	-- Equip item function
+	local function equipItem()
+		local equipArgs = {201, 698}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("Connection"):InvokeServer(unpack(equipArgs))
+		end)
+		if not success then
+			warn("Equip item failed:", result)
+		end
+	end
+	
+	local function UnEquip()
+		local args = {
+			[1] = 202,
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("Connection"):InvokeServer(unpack(args))
+	end
+	
+	-- Give item to player by username
+	local function giveItemToPlayer(userId)
+		local giveArgs = {userId, 698}
+		local success, result = pcall(function()
+			ReplicatedStorage:WaitForChild("FunctionConnections"):WaitForChild("RequestSendPassAlongActionItem"):InvokeServer(unpack(giveArgs))
+		end)
+		if not success then
+			warn("Give item failed for userId " .. userId .. ":", result)
+		end
+	end
+	
+	-- Find a player by username or part of it
+	local function getPlayerByName(username)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player.Name:lower():sub(1, #username):lower() == username:lower() then
+				return player
+			end
+		end
+		return nil
+	end
+	
+	-- Button click event
+	script.Parent.MouseButton1Click:Connect(function()
+		local username = TextBox.Text
+		if username and username ~= "" then
+			local player = getPlayerByName(username)
+			if player then
+				-- Equip item to local player
+				equipItem()
+	
+				-- Give item to the local player and the targeted player
+				giveItemToPlayer(game.Players.LocalPlayer.UserId)
+				giveItemToPlayer(player.UserId)
+				wait(0)
+				UnEquip()
+			else
+				warn("Player not found!")
+			end
+		else
+			warn("Please enter a valid username!")
+		end
+	end)
+end
+coroutine.wrap(OQTJV_fake_script)()
+local function CFBXF_fake_script() -- TextButton_6.LocalScript 
+	local script = Instance.new('LocalScript', TextButton_6)
+
+	
+	script.Parent.MouseButton1Click:Connect(function()
+		local args = {
+			[1] = {
+				["HatAccessory"] = "21070012,3154654707,335080779,132809431,183468963",
+				["RightLegColor"] = {
+					[1] = "255",
+					[2] = "255",
+					[3] = "255"
+				},
+				["WaistAccessory"] = "53623350",
+				["Torso"] = 109182039511426,
+				["WidthScale"] = 0.6,
+				["LeftArm"] = 80900302406002,
+				["BodyTypeScale"] = 0.016367793083190918,
+				["BackAccessory"] = "34398653",
+				["Shirt"] = 0,
+				["FaceAccessory"] = "89171071,233705354,191101707,24114402",
+				["Pants"] = 0,
+				["RightArmColor"] = {
+					[1] = "255",
+					[2] = "255",
+					[3] = "255"
+				},
+				["LeftArmColor"] = {
+					[1] = "255",
+					[2] = "255",
+					[3] = "255"
+				},
+				["HairAccessory"] = "172246820",
+				["ShouldersAccessory"] = "11563251,86494893,12562495,11999247",
+				["RightArm"] = 109536486803444,
+				["ProportionScale"] = 0.5081838965415955,
+				["Head"] = 14731382899,
+				["FrontAccessory"] = "1046895,26382698,130497352,5966071922",
+				["Emotes"] = {
+					["1"] = {
+						[1] = 11563251
+					},
+					["4"] = {
+						[1] = 3576968026
+					},
+					["3"] = {
+						[1] = 3576823880
+					},
+					["2"] = {
+						[1] = 3360689775
+					}
+				},
+				["NeckAccessory"] = "398693210,68633810,96850523",
+				["Face"] = 0,
+				["HeadColor"] = {
+					[1] = "17",
+					[2] = "17",
+					[3] = "17"
+				},
+				["TorsoColor"] = {
+					[1] = "245",
+					[2] = "205",
+					[3] = "48"
+				},
+				["DepthScale"] = 0.6,
+				["RightLeg"] = 2608538559,
+				["HeadScale"] = 1.25,
+				["HeightScale"] = 0.6,
+				["LeftLegColor"] = {
+					[1] = "255",
+					[2] = "255",
+					[3] = "255"
+				},
+				["LeftLeg"] = 2608536258
+			}
+		}
+	
+		game:GetService("ReplicatedStorage"):WaitForChild("FunctionConnections"):WaitForChild("NewAESaveAvatar"):InvokeServer(unpack(args))
+	end)
+end
+coroutine.wrap(CFBXF_fake_script)()
+   end,
+})
+
+local Tab = Window:CreateTab("Mais Coisas", 133818775236467)
+local Section = Tab:CreateSection("mais coisas")
+local Button = Tab:CreateButton({
+   Name = "Ferramenta de Masturbação (Habilite o inventário primeiro)",
+   Callback = function()
+       loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Carregar E para retroceder o personagem",
+   Callback = function()
+local key = "E"
+local flashbacklength = 60
+local flashbackspeed = 1
+local name = game:GetService("RbxAnalyticsService"):GetSessionId()
+local frames,uis,LP,RS = {},game:GetService("UserInputService"),game:GetService("Players").LocalPlayer,game:GetService("RunService")
+
+pcall(RS.UnbindFromRenderStep,RS,name)
+
+local function getchar()
+   return LP.Character or LP.CharacterAdded:Wait()
+end
+
+function gethrp(c)
+return c:FindFirstChild("HumanoidRootPart") or c.RootPart or c.PrimaryPart or c:FindFirstChild("Torso") or c:FindFirstChild("UpperTorso") or c:FindFirstChildWhichIsA("BasePart")
+end
+
+local flashback = {lastinput=false,canrevert=true}
+
+function flashback:Advance(char,hrp,hum,allowinput)
+   if #frames>flashbacklength*60 then
+       table.remove(frames,1)
+   end
+   if allowinput and not self.canrevert then
+       self.canrevert = true
+   end
+   if self.lastinput then
+       hum.PlatformStand = false
+       self.lastinput = false
+   end
+   table.insert(frames,{
+       hrp.CFrame,
+       hrp.Velocity,
+       hum:GetState(),
+       hum.PlatformStand,
+       char:FindFirstChildOfClass("Tool")
+   })
+end
+
+function flashback:Revert(char,hrp,hum)
+   local num = #frames
+   if num==0 or not self.canrevert then
+       self.canrevert = false
+       self:Advance(char,hrp,hum)
+       return
+   end
+   for i=1,flashbackspeed do
+       table.remove(frames,num)
+       num=num-1
+   end
+   self.lastinput = true
+   local lastframe = frames[num]
+   table.remove(frames,num)
+   hrp.CFrame = lastframe[1]
+   hrp.Velocity = -lastframe[2]
+   hum:ChangeState(lastframe[3])
+   hum.PlatformStand = lastframe[4]
+   local currenttool = char:FindFirstChildOfClass("Tool")
+   if lastframe[5] then
+       if not currenttool then
+           hum:EquipTool(lastframe[5])
+       end
+   else
+       hum:UnequipTools()
+   end
+end
+
+local function step()
+   local char = getchar()
+   local hrp = gethrp(char)
+   local hum = char:FindFirstChildWhichIsA("Humanoid")
+   if uis:IsKeyDown(Enum.KeyCode[key]) then
+       flashback:Revert(char,hrp,hum)
+   else
+       flashback:Advance(char,hrp,hum,true)
+   end
+end
+RS:BindToRenderStep(name,1,step)
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Pulo na Parede",
+   Callback = function()
+local wallJumpForce = Vector3.new(0, -70, -70)
+local wallDetectionDistance = 3
+local cooldownTime = 0
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
+local canWallJump = true
+
+local function isNearWall()
+    local rayParams = RaycastParams.new()
+    rayParams.FilterDescendantsInstances = {character}
+    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+    local directions = {
+        Vector3.new(1, 0, 0),
+        Vector3.new(-1, 0, 0),
+        Vector3.new(0, 0, 1),
+        Vector3.new(0, 0, -1)
+    }
+
+    for _, dir in ipairs(directions) do
+        local ray = workspace:Raycast(rootPart.Position, dir * wallDetectionDistance, rayParams)
+        if ray then
+            return ray
+        end
+    end
+
+    return nil
+end
+
+local function wallJump()
+    if not canWallJump then return end
+
+    local wallRay = isNearWall()
+    if wallRay then
+        canWallJump = false
+
+        local jumpDirection = wallRay.Normal * wallJumpForce.Magnitude
+        rootPart.Velocity = Vector3.new(jumpDirection.X, wallJumpForce.Y, jumpDirection.Z)
+
+        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+        wait(cooldownTime)
+        canWallJump = true
+    end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+
+    if input.KeyCode == Enum.KeyCode.Space then
+        wallJump()
+    end
+end)
+end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Invisibilidade",
+   Callback = function()
+       loadstring(game:HttpGet('https://pastebin.com/raw/3Rnd9rHf'))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GUI de Animações R15",
+   Callback = function()
+       loadstring(game:HttpGet('https://pastebin.com/raw/5HNpk2yN'))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GUI de Animações R15 2",
+   Callback = function()
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/ExploitFin/AquaMatrix/refs/heads/AquaMatrix/AquaMatrix"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Habilitar Colisões",
+   Callback = function()
+ 	-- faz com que você possa colidir com jogadores e seus membros (Use com scripts como Snake)
+-- NOTA: A colisão não é controlada pelo servidor e só acontece no seu cliente (Scripts de arremesso só funcionam para você, não para outros)
+
+LP = game.Players.LocalPlayer
+while wait(3) do
+    for i,v in pairs(game.Players:GetDescendants()) do
+        if v:IsA("Player") and workspace:FindFirstChild(v.Name) and v ~= LP and workspace[v.Name]:FindFirstChild("CHECKER") == nil then
+            checker = Instance.new("BoolValue",workspace[v.Name])
+            checker.Name = "CHECKER"
+            for i,v in pairs(workspace:WaitForChild(v.Name):GetDescendants()) do
+                if v:IsA("Part") or v:IsA("MeshPart") then
+                    local collider = Instance.new("Part",v)
+                    collider.Size = v.Size
+                    collider.Position = v.Position
+                    collider.Transparency = 1
+                    local weld = Instance.new("Weld",v)
+                    weld.Part0 = v
+                    weld.Part1 = collider
+                end
+            end
+        end
+    end
+end   
+end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "Transformar animações R15 em R6",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Imagnir/r6_anims_for_r15/main/r6_anims.lua", true))()
+   end,
+})
